@@ -1,0 +1,16 @@
+<odoo>
+    <!-- Top-level menu -->
+    <menuitem id="menu_supplier_portal_root" name="Supplier Portal" sequence="10"/>
+
+    <!-- Sub-menu for Suppliers -->
+    <menuitem id="menu_supplier" name="Suppliers" parent="menu_supplier_portal_root" action="action_supplier" sequence="10"/>
+
+    <!-- Sub-menu for Offers -->
+    <menuitem id="menu_offer" name="Offers" parent="menu_supplier_portal_root" action="action_offer" sequence="20"/>
+
+    <!-- Sub-menu for Demands -->
+    <menuitem id="menu_demand" name="Demands" parent="menu_supplier_portal_root" action="action_demand" sequence="30"/>
+
+    <!-- Sub-menu for Invoices -->
+    <menuitem id="menu_invoice" name="Invoices" parent="menu_supplier_portal_root" action="action_invoice" sequence="40"/>
+</odoo>

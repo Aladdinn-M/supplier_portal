@@ -1,0 +1,12 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_supplier_admin,supplier access for admin,model_supplier_portal_supplier,base.group_system,1,1,1,1
+access_supplier_user,supplier access for suppliers,model_supplier_portal_supplier,,1,0,0,0
+
+access_offer_admin,offer access for admin,model_supplier_portal_offer,base.group_system,1,1,1,1
+access_offer_user,offer access for suppliers,model_supplier_portal_offer,,1,1,1,1
+
+access_demand_admin,demand access for admin,model_supplier_portal_demand,base.group_system,1,1,1,1
+access_demand_user,demand access for suppliers,model_supplier_portal_demand,,1,0,0,0
+
+access_invoice_admin,invoice access for admin,model_supplier_portal_invoice,base.group_system,1,1,1,1
+access_invoice_user,invoice access for suppliers,model_supplier_portal_invoice,,1,0,0,0

@@ -1,0 +1,42 @@
+<odoo>
+    <template id="offer_details_page" name="Offer Details">
+        <t t-call="website.layout">
+            <div class="container mt-5 mb-5">
+                <h2>Offer Details</h2>
+                
+                <!-- Offer Information -->
+                <p><strong>Offer Name:</strong> <t t-esc="offer.offer_name"/></p>
+                <p><strong>Description:</strong> <t t-esc="offer.offer_description"/></p>
+                <p><strong>Amount:</strong> $<t t-esc="offer.offer_amount"/></p>
+                <p><strong>Status:</strong> <t t-esc="offer.status"/></p>
+                <p><strong>Created Date:</strong> <t t-esc="offer.created_date.strftime('%Y-%m-%d %H:%M:%S')"/></p>
+                <p><strong>Validity Date:</strong> <t t-esc="offer.validity_date or 'No validity date provided'"/></p>
+                
+                <!-- Related Demand -->
+                <p><strong>Related Demand:</strong> 
+                    <t t-if="offer.demand_id">
+                        <a t-att-href="'/supplier_portal/demand/%s' % offer.demand_id.id">
+                            <t t-esc="offer.demand_id.demand_name"/>
+                        </a>
+                    </t>
+                    <t t-else="">
+                        No related demand.
+                    </t>
+                </p>
+
+                <!-- Download Offer File -->
+                <t t-if="offer.offer_file">
+                    <p>
+                        <strong>Offer File:</strong>
+                        <a t-att-href="'/supplier_portal/offer/%s/download' % offer.id" class="btn btn-info btn-sm">Download File</a>
+                    </p>
+                </t>
+
+                <!-- Actions -->
+                <div class="mt-4">
+                    <a href="/supplier_portal" class="btn btn-secondary">Back</a>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

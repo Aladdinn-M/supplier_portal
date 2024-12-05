@@ -1,0 +1,89 @@
+<odoo>
+    <template id="create_offer_page" name="Create Offer">
+        <t t-call="website.layout">
+            <div class="container mt-5 mb-5">
+                <h2>Create Offer</h2>
+                <form action="/supplier_portal/offer/create/submit" method="post" enctype="multipart/form-data">
+                    <!-- Add CSRF Token -->
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    
+                    <!-- Supplier Reference -->
+                    <input type="hidden" name="supplier_id" t-att-value="supplier.id"/>
+
+                    <!-- Demand Reference -->
+                    <t t-if="demand">
+                        <div class="form-group">
+                            <label>Demand:</label>
+                            <p><strong><t t-esc="demand.demand_name"/></strong></p>
+                            <input type="hidden" name="demand_id" t-att-value="demand.id"/>
+                        </div>
+                    </t>
+
+                    <!-- Offer Name -->
+                    <div class="form-group">
+                        <label for="offer_name">Offer Name</label>
+                        <input type="text" id="offer_name" name="offer_name" class="form-control" required="true" placeholder="Enter offer name"/>
+                    </div>
+
+                    <!-- Offer Description -->
+                    <div class="form-group">
+                        <label for="offer_description">Offer Description</label>
+                        <textarea id="offer_description" name="offer_description" class="form-control" rows="4" required="true" placeholder="Enter description"></textarea>
+                    </div>
+
+                    <!-- Offer Amount -->
+                    <div class="form-group">
+                        <label for="offer_amount">Offer Amount</label>
+                        <input type="number" id="offer_amount" name="offer_amount" class="form-control" required="true" placeholder="Enter offer amount"/>
+                    </div>
+
+                    <!-- Offer File -->
+                    <div class="form-group">
+                        <label for="offer_file">Upload Offer File</label>
+                            <input 
+                                type="file" 
+                                id="offer_file" 
+                                name="offer_file" 
+                                class="form-control" 
+                                accept="application/pdf" 
+                                onchange="validateFile()"
+                            />
+                        <small class="form-text text-muted">Only PDF files under 2 MB are allowed.</small>
+                    </div>
+                    <script>
+                        function validateFile() {
+                            const fileInput = document.getElementById('offer_file');
+                            const file = fileInput.files[0]; // Get the selected file
+                            
+                            if (file) {
+                                // Check file type
+                                if (file.type !== "application/pdf") {
+                                    alert("Only PDF files are allowed!");
+                                    fileInput.value = ""; // Clear the input
+                                    return;
+                                }
+
+                                // Check file size (2 MB = 2 * 1024 * 1024 bytes)
+                                const maxSize = 2 * 1024 * 1024; 
+                                if (file.size > maxSize) {
+                                    alert("The file size must be under 2 MB!");
+                                    fileInput.value = ""; // Clear the input
+                                    return;
+                                }
+                            }
+                        }
+                    </script>
+
+                    <!-- Validity Date -->
+                    <div class="form-group">
+                        <label for="validity_date">Validity Date</label>
+                        <input type="date" id="validity_date" name="validity_date" class="form-control"/>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary mt-3">Submit Offer</button>
+                </form>
+            </div>
+        </t>
+    </template>
+</odoo>

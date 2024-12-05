@@ -1,0 +1,43 @@
+<odoo>
+    <template id="demand_details_page" name="Demand Details">
+        <t t-call="website.layout">
+            <div class="container mt-5 mb-5">
+                <h2>Demand Details</h2>
+
+                <!-- Display Demand Details -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Demand Name</h5>
+                        <p class="card-text"><t t-esc="demand.demand_name"/></p>
+
+                        <h5 class="card-title">Description</h5>
+                        <p class="card-text"><t t-esc="demand.demand_description"/></p>
+                        <!-- Display File -->
+                        <t t-if="demand.demand_file">
+                            <div class="mt-3">
+                                <h5 class="card-title">Demand File</h5>
+                                <a t-att-href="'/supplier_portal/demand/%s/download' % demand.id" 
+                                   class="btn btn-info">Download File</a>
+                            </div>
+                        </t>
+                        <t t-else="">
+                            <p>No file uploaded for this demand.</p>
+                        </t>
+                    </div>
+                </div>
+
+                <!-- Create Offer -->
+                <div class="mt-4">
+                    <a t-att-href="'/supplier_portal/offer/create?demand_id=%s' % demand.id" class="btn btn-primary">
+                        Create Offer
+                    </a>
+                </div>
+
+                <!-- Back Button -->
+                <div class="mt-3">
+                    <a href="/supplier_portal" class="btn btn-secondary">Back</a>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,300 @@
+<odoo>
+    <!-- Supplier Space Page -->
+    <template id="supplier_space" name="Supplier Space">
+        <t t-call="website.layout">
+            <div class="container mt-5 mb-5">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2>Welcome, <t t-esc="supplier.full_name"/></h2>
+
+                    <!-- Logout Button -->
+                    <form action="/supplier_portal/logout" method="post" style="display: inline;">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <button type="submit" class="btn btn-danger">Logout</button>
+                    </form>
+                </div>
+
+                <!-- Navigation Tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#dashboard" role="tab" aria-controls="dashboard" aria-selected="true">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#demands" role="tab" aria-controls="demands" aria-selected="false">Demands &amp; Offers</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#account" role="tab" aria-controls="account" aria-selected="false">Account Info</a>
+                    </li>
+                </ul>
+
+                <!-- Tab Content -->
+                <div class="tab-content mt-3">
+                    <!-- Dashboard Content -->
+                    <div class="tab-pane fade show active" id="dashboard" role="tabpanel">
+                        <!-- Cards and Graph Row -->
+                        <div class="row mt-4">
+                            <!-- Cards Column -->
+                            <div class="col-md-7">
+                                <div class="row">
+                                    <!-- Total Offers Card -->
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card text-center" style="height: 100%;">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Total Offers</h5>
+                                                <p class="card-text display-4"><t t-esc="total_offers" /></p>
+                                                <a href="/supplier_portal/offer" class="btn btn-primary">View All Offers</a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Total Demands Card -->
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card text-center" style="height: 100%;">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Total Demands</h5>
+                                                <p class="card-text display-4"><t t-esc="total_demands" /></p>
+                                                <a href="/supplier_portal/demand" class="btn btn-primary">View All Demands</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Products Sales Graph -->
+                            <div class="col-md-5">
+                                <div class="card" style="height: 100%;">
+                                    <div class="card-header">
+                                        <h5 class="card-title">Product Sales Graph</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="productSalesChart" style="max-height: 400px;"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Include Chart.js -->
+                        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                                // Data passed from the backend
+                                const labels = <t t-raw="labels_prod"/>;
+                                const salesData = <t t-raw="sales"/>;
+
+                                // Map sales data to datasets for Chart.js
+                                const datasets = salesData.map((sales, index) => ({
+                                    label: labels[index], // Product labels
+                                    data: sales,          // Weekly sales data
+                                    backgroundColor: `rgba(75, 192, 192, 0.2)`,
+                                    borderColor: `rgba(75, 192, 192, 1)`,
+                                    borderWidth: 2,
+                                    fill: true,
+                                    tension: 0.4
+                                }));
+
+                                // Create the Chart.js line chart
+                                const ctx = document.getElementById('productSalesChart').getContext('2d');
+                                new Chart(ctx, {
+                                    type: 'line', // Line graph
+                                    data: {
+                                        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5'], // Weeks
+                                        datasets: datasets // Products with their sales data
+                                    },
+                                    options: {
+                                        responsive: true,
+                                        maintainAspectRatio: false,
+                                        scales: {
+                                            y: {
+                                                beginAtZero: true
+                                            }
+                                        }
+                                    }
+                                });
+                            });
+                        </script>
+
+
+                       
+                        <!-- Offers and Demands Lists Row -->
+                        <div class="row mt-4">
+                            <!-- Offers List -->
+                            <div class="col-md-6">
+                                <h3>Offers</h3>
+                                <!-- Scrollable Offers List -->
+                                <div style="max-height: 250px; overflow-y: auto;">
+                                    <ul class="list-group">
+                                        <t t-if="offers">
+                                            <t t-foreach="offers" t-as="offer">
+                                                <li class="list-group-item">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <span><strong><t t-esc="offer.offer_name"/></strong></span>
+                                                        <a t-att-href="'/supplier_portal/offer/%s' % offer.id" class="btn btn-info btn-sm">See Details</a>
+                                                    </div>
+                                                </li>
+                                            </t>
+                                        </t>
+                                        <t t-else="">
+                                            <li class="list-group-item">No offers available.</li>
+                                        </t>
+                                    </ul>
+                                </div>
+                                <div class="mt-3">
+                                    <a href="/supplier_portal/offer" class="btn btn-secondary">See More Offers</a>
+                                </div>
+                            </div>
+                        
+                    
+
+                            <!-- Demands List -->
+                            <div class="col-md-6">
+                                <h3>Demands</h3>
+                                <!-- Scrollable Demands List -->
+                                <div style="max-height: 250px; overflow-y: auto;">
+                                    <ul class="list-group">
+                                        <t t-if="demands">
+                                            <t t-foreach="demands" t-as="demand">
+                                                <li class="list-group-item">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <span><t t-esc="demand.demand_name" /></span>
+                                                        <a t-att-href="'/supplier_portal/demand/%s' % demand.id" class="btn btn-info btn-sm">View Details</a>
+                                                    </div>
+                                                </li>
+                                            </t>
+                                        </t>
+                                        <t t-else="">
+                                            <li class="list-group-item">No demands available.</li>
+                                        </t>
+                                    </ul>
+                                </div>
+                                <div class="mt-3">
+                                    <a href="/supplier_portal/demand" class="btn btn-secondary">See More Demands</a>
+                                </div>
+                            </div>
+                        </div>
+                
+                    </div>
+                    <!-- Demands & Offers Tab -->
+                    <div class="tab-pane fade mb-4" id="demands" role="tabpanel">
+                        <h3>Demands</h3>
+                        <ul class="list-group mb-4" style="max-height: 350px; overflow-y: auto;">
+                            <t t-if="demands">
+                                <t t-foreach="demands" t-as="demand">
+                                    <li class="list-group-item">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span><strong><t t-esc="demand.demand_name"/></strong></span>
+                                            <a t-att-href="'/supplier_portal/demand/%s' % demand.id" class="btn btn-info btn-sm">View Details</a>
+                                        </div>
+                                    </li>
+                                </t>
+                            </t>
+                            <t t-else="">
+                                <li class="list-group-item">No demands available.</li>
+                            </t>
+                        </ul>
+                        <div class="text-center mb-4">
+                            <a href="/supplier_portal/demand" class="btn btn-secondary">See More Demands</a>
+                        </div>
+
+                        <h3>Offers</h3>
+                        <div class="mb-3">
+                            <!-- Create Offer Button -->
+                            <a href="/supplier_portal/offer/create" class="btn btn-primary">Create Offer</a>
+                        </div>
+                        <ul class="list-group mb-4" style="max-height: 350px; overflow-y: auto;">
+                            <t t-if="offers">
+                                <t t-foreach="offers" t-as="offer">
+                                    <li class="list-group-item">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span><strong><t t-esc="offer.offer_name"/></strong></span>
+                                            <div>
+                                                <!-- View Details Button -->
+                                                <a t-att-href="'/supplier_portal/offer/%s' % offer.id" class="btn btn-info btn-sm">View Details</a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </t>
+                            </t>
+                            <t t-else="">
+                                <li class="list-group-item">No offers available.</li>
+                            </t>
+                        </ul>
+                        <div class="text-center">
+                            <a href="/supplier_portal/offer" class="btn btn-secondary">See More Offers</a>
+                        </div>
+
+                    </div>
+                    <!-- Account Info Tab -->
+                    <div class="tab-pane fade" id="account" role="tabpanel">
+                        <h3>Account Information</h3>
+                        <p><strong>Name:</strong> <t t-esc="supplier.full_name"/></p>
+                        <p><strong>Company:</strong> <t t-esc="supplier.company_name"/></p>
+                        <p><strong>Email:</strong> <t t-esc="supplier.email"/></p>
+                        <p><strong>Address:</strong> <t t-esc="supplier.address"/></p>
+                        <p><strong>Website:</strong> <t t-esc="supplier.website"/></p>
+                        <p><strong>KYC:</strong> <t t-esc="supplier.kyc"/></p>
+                    </div>
+                </div>
+            </div>
+        </t>
+
+    </template>
+
+
+    <template id="all_demands_page" name="All Demands">
+        <t t-call="website.layout">
+            <div class="container mt-5 mb-5">
+                <h2>All Demands</h2>
+                <ul class="list-group">
+                    <t t-if="demands">
+                        <t t-foreach="demands" t-as="demand">
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span><strong><t t-esc="demand.demand_name"/></strong></span>
+                                    <a t-att-href="'/supplier_portal/demand/%s' % demand.id" class="btn btn-info btn-sm">View Details</a>
+                                </div>
+                            </li>
+                        </t>
+                    </t>
+                    <t t-else="">
+                        <li class="list-group-item">No demands available.</li>
+                    </t>
+                </ul>
+                <div class="mt-3">
+                    <a href="/supplier_portal" class="btn btn-secondary">Back</a>
+                </div>
+            </div>
+        </t>
+    </template>
+
+
+    <template id="all_offers_page" name="All Offers">
+        <t t-call="website.layout">
+            <div class="container mt-5 mb-5">
+                <h2>All Offers</h2>
+                <div class="mb-3">
+                    <!-- Create Offer Button -->
+                    <a href="/supplier_portal/offer/create" class="btn btn-primary">Create Offer</a>
+                </div>
+                <ul class="list-group">
+                    <t t-if="offers">
+                        <t t-foreach="offers" t-as="offer">
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span><strong><t t-esc="offer.offer_name"/></strong></span>
+                                    <div>
+                                        <!-- View Details Button -->
+                                        <a t-att-href="'/supplier_portal/offer/%s' % offer.id" class="btn btn-info btn-sm">View Details</a>
+                                    </div>
+                                </div>
+                            </li>
+                        </t>
+                    </t>
+                    <t t-else="">
+                        <li class="list-group-item">No offers available.</li>
+                    </t>
+                </ul>
+                <div class="mt-3">
+                    <a href="/supplier_portal" class="btn btn-secondary">Back</a>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

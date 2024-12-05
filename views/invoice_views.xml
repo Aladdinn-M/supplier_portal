@@ -1,0 +1,40 @@
+<odoo>
+    <record id="view_invoice_tree" model="ir.ui.view">
+        <field name="name">invoice.tree</field>
+        <field name="model">supplier.portal.invoice</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="invoice_number"/>
+                <field name="supplier_name"/>
+                <field name="amount"/>
+                <field name="status"/>
+                <field name="invoice_date"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_invoice_form" model="ir.ui.view">
+        <field name="name">invoice.form</field>
+        <field name="model">supplier.portal.invoice</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="supplier_id"/>
+                    <field name="invoice_number"/>
+                    <field name="amount"/>
+                    <field name="status"/>
+                    <field name="invoice_date"/>
+                    <field name="due_date"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_invoice" model="ir.actions.act_window">
+        <field name="name">Invoices</field>
+        <field name="res_model">supplier.portal.invoice</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>
